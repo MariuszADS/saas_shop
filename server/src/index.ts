@@ -1,7 +1,12 @@
 import express, { type Express, type Request, type Response } from 'express';
 import { createProduct } from '@/db/sql/createProduct.ts';
+import productRoutes from './routes/product.routes.ts';
 
 const app: Express = express();
+
+//MIDDLEWARE
+app.use(express.json());
+app.use('/api/products', productRoutes)
 
 // GET method route
 app.get('/', (req: Request, res: Response) => {
@@ -9,8 +14,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // POST method route
-app.use(express.json());
-
 app.post('/api/products', async (req: Request, res: Response, next) => {
   try {
     const product = await createProduct({

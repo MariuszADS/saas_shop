@@ -1,7 +1,7 @@
 import { pool } from "@/db/db.ts"
 
 // db/sql/createProduct.ts
-type CreateProductInput = {
+export type CreateProductInput = {
   name: string;
   description: string | null;
   price: number;
