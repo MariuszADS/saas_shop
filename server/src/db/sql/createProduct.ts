@@ -1,6 +1,5 @@
 import { pool } from "@/db/db.ts"
 
-// db/sql/createProduct.ts
 export type CreateProductInput = {
   name: string;
   description: string | null;

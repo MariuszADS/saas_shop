@@ -1,5 +1,4 @@
 import {pool} from "@/db/db.ts"
-// import { type CreateProductInput } from "./createProduct.ts"
 
 export async function deleteProduct(id:number) {
  const result = await pool.query(

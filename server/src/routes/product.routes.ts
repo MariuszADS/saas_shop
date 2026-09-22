@@ -1,26 +1,17 @@
 import { Router } from "express";
-import { deleteProduct } from "@/db/sql/deleteProduct.ts";
+import {createProductController,} from "@/controllers/create.product.controllers.ts";
+import { getProductsController } from "@/controllers/get.all.products.controller.ts";
+import { getProductByIdController } from "@/controllers/get.id.product.controller.ts";
+import { deleteProductController } from "@/controllers/delete.product.controller.ts";
 
 const router = Router();
 
-router.delete("/:id", async (req, res) => {
-    const id = Number(req.params.id);
+router.get("/", getProductsController);
 
-    if (Number.isNaN(id)) {
-        return res.status(400).json({
-            message: "Invalid product id",
-        });
-    }
+router.get("/:id", getProductByIdController);
 
-    const deletedProduct = await deleteProduct(id);
+router.post("/", createProductController);
 
-    if (!deletedProduct) {
-        return res.status(404).json({
-            message: "Product not found",
-        });
-    }
+router.delete("/:id", deleteProductController);
 
-    return res.status(200).json(deletedProduct);
-});
-
-export default router
+export default router;
