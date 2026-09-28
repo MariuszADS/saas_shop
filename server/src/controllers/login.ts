@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { generateAccessToken } from "@/utils/jwt.ts";
 import type { Request, Response, NextFunction } from "express";
 import { findUserByEmail } from "@/db/sql/findUserByEmail.ts";
 
@@ -15,7 +16,7 @@ export async function login(
         message: "Email and password are required",
       });
     }
-
+    
     const user = await findUserByEmail(email);
 
     if (!user) {
@@ -35,7 +36,10 @@ export async function login(
       });
     }
 
+    const accessToken = generateAccessToken(user.id, user.role);
+
     return res.status(200).json({
+      accessToken,
       id: user.id,
       email: user.email,
       role: user.role,
@@ -44,3 +48,4 @@ export async function login(
     next(error);
   }
 }
+
