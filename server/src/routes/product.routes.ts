@@ -10,9 +10,7 @@ import { requireAdmin } from "@/middleware/role.middleware.ts";
 const router = Router();
 
 router.get("/", getProductsController);
-
 router.get("/:id", getProductByIdController);
-
 router.post("/", authenticate, requireAdmin, createProductController);
 
 router.delete("/:id", authenticate, requireAdmin, deleteProductController);

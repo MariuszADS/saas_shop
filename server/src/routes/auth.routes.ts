@@ -10,5 +10,10 @@ const router = Router();
 router.post("/register", register);
 router.post("/login", login);
 router.get("/profile", authenticate, getProfile);
+router.get("/me", authenticate, (req, res) => {
+  return res.status(200).json({
+    user: req.user,
+  });
+});
 
 export default router;

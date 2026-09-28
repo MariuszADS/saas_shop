@@ -9,6 +9,7 @@ const app: Express = express();
 app.use(express.json());
 app.use('/api/products', productRoutes)
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(3000, () => {
   console.log("servers is running on http://localhost:3000");
