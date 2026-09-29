@@ -9,9 +9,9 @@ export async function login(
   next: NextFunction
 ) {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body ?? {};
 
-    if (!email || !password) {
+    if (typeof email !== "string" || !email.trim() || typeof password !== "string" || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });

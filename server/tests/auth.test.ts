@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import express from "express";
 import request from "supertest";
@@ -68,4 +69,55 @@ describe("product permissions", () => {
       expect(query).toHaveBeenCalledOnce();
     });
   }
+});
+
+
+describe("registration and login", () => {
+  const email = "auth-test@example.invalid";
+  const password = "test-password-for-auth";
+
+  it("stores a bcrypt hash and logs in with the original password only", async () => {
+    const user = { id: 42, email, role: "user" };
+    query.mockResolvedValueOnce({ rows: [user] });
+    const registration = await request(app).post("/api/auth/register").send({ email, password });
+    expect(registration.status).toBe(201);
+    expect(registration.body).toEqual(user);
+    const storedHash = query.mock.calls[0]![1][1];
+    expect(storedHash).not.toBe(password);
+    expect(await bcrypt.compare(password, storedHash)).toBe(true);
+    query.mockResolvedValue({ rows: [{ ...user, password_hash: storedHash }] });
+    const login = await request(app).post("/api/auth/login").send({ email, password });
+    expect(login.status).toBe(200);
+    expect(jwt.verify(login.body.accessToken, secret)).toMatchObject({ userId: 42, role: "user" });
+    expect(login.body).not.toHaveProperty("password_hash");
+    for (const wrongPassword of ["wrong-password", storedHash]) {
+      const response = await request(app).post("/api/auth/login").send({ email, password: wrongPassword });
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ message: "Invalid credentials" });
+    }
+  });
+
+  it("returns JSON 409 when the email already exists", async () => {
+    query.mockResolvedValueOnce({ rows: [] });
+    const response = await request(app).post("/api/auth/register").send({ email, password });
+    expect(response.status).toBe(409);
+    expect(response.type).toBe("application/json");
+    expect(response.body.message).toContain("already exists");
+  });
+
+  it("rejects malformed credentials without querying the database", async () => {
+    for (const route of ["register", "login"]) {
+      for (const body of [{}, { email, password: 123 }, { email: {}, password }, { email: " ", password }]) {
+        expect((await request(app).post(`/api/auth/${route}`).send(body)).status).toBe(400);
+      }
+      expect((await request(app).post(`/api/auth/${route}`)).status).toBe(400);
+    }
+    expect(query).not.toHaveBeenCalled();
+  });
+
+  it("rejects an unknown user", async () => {
+    query.mockResolvedValueOnce({ rows: [] });
+    const response = await request(app).post("/api/auth/login").send({ email, password });
+    expect(response.status).toBe(401);
+  });
 });

@@ -1,7 +1,7 @@
 import request from "supertest";
 import { describe, it, expect } from "vitest";
 
-import { app } from "@/app.ts";
+import { app } from "@/index.ts";
 
 describe("Orders API", () => {
   it("should return 401 without token", async () => {

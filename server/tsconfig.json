@@ -24,6 +24,6 @@
     "noUncheckedIndexedAccess": true
   },
 
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../client/src/utils/cart.ts", "../client/src/types/cart.ts"],
   "exclude": ["node_modules", "dist"]
 }
