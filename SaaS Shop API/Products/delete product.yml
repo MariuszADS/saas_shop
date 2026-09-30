@@ -1,0 +1,18 @@
+info:
+  name: delete product
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/products/10"
+  auth:
+    type: bearer
+    token: XXX
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

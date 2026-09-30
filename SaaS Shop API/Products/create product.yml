@@ -1,0 +1,27 @@
+info:
+  name: create product
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/products"
+  body:
+    type: json
+    data: |
+      {
+        "name": "Mechanical Keyboard",
+        "description": "RGB mechanical keyboard",
+        "price": 899.99,
+        "stock": 15
+      }
+  auth:
+    type: bearer
+    token: XXX
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

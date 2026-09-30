@@ -1,0 +1,11 @@
+name: Local
+variables:
+  - name: baseUrl
+    value: http://localhost:3000
+    description: ""
+  - name: token
+    value: ""
+    description: ""
+  - name: adminToken
+    value: ""
+    description: ""

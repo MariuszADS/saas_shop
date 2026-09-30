@@ -1,0 +1,27 @@
+info:
+  name: update(fix)
+  type: http
+  seq: 5
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/products/3"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Mechanical Keyboard Pro",
+        "description": "Updated keyboard",
+        "price": 999.99,
+        "stock": 20
+      }
+  auth:
+    type: bearer
+    token: XXX
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
