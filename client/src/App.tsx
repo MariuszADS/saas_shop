@@ -5,8 +5,12 @@ import {
 } from "react-router-dom";
 
 import Navbar from "@/components/NavBar";
+import ProtectedRoute from "@/components/ProtectedRoute";
+
 import ProductsPage from "@/pages/ProductsPage";
 import CartPage from "@/pages/CartPages";
+import LoginPage from "@/pages/loginPage";
+import RegisterPage from "@/pages/registerPage";
 
 function App() {
   return (
@@ -30,9 +34,21 @@ function App() {
         />
 
         <Route
-          path="/cart"
-          element={<CartPage />}
+          path="/login"
+          element={<LoginPage />}
         />
+
+        <Route
+          path="/register"
+          element={<RegisterPage />}
+        />
+
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/cart"
+            element={<CartPage />}
+          />
+        </Route>
 
         <Route
           path="*"

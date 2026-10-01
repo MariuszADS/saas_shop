@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
+
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const { cart } = useCart();
+  const {
+    user,
+    logout,
+  } = useAuth();
 
   const itemCount = cart.reduce(
-    (total, item) => total + item.quantity,
+    (total, item) =>
+      total + item.quantity,
     0
   );
 
@@ -18,6 +25,26 @@ export default function Navbar() {
       <Link to="/cart">
         Cart ({itemCount})
       </Link>
+
+      {user ? (
+        <>
+          <span>{user.email}</span>
+
+          <button onClick={logout}>
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">
+            Login
+          </Link>
+
+          <Link to="/register">
+            Register
+          </Link>
+        </>
+      )}
     </nav>
   );
 }
