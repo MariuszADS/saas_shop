@@ -1,8 +1,9 @@
-import CartPage from "@/pages/CartPages";
+// import CartPage from "@/pages/CartPages";
+import ProductsPage from "./pages/ProductsPage";
 
 function App() {
   return (
-    <CartPage />
+    <ProductsPage />
   );
 }
 
