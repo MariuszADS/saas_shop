@@ -11,6 +11,7 @@ import ProductsPage from "@/pages/ProductsPage";
 import CartPage from "@/pages/CartPages";
 import LoginPage from "@/pages/loginPage";
 import RegisterPage from "@/pages/registerPage";
+import OrdersPage from "@/pages/OrderPage";
 
 function App() {
   return (
@@ -47,6 +48,17 @@ function App() {
           <Route
             path="/cart"
             element={<CartPage />}
+          />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/cart"
+            element={<CartPage />}
+          />
+
+          <Route
+            path="/orders"
+            element={<OrdersPage />}
           />
         </Route>
 

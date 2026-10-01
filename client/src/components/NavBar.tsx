@@ -28,6 +28,9 @@ export default function Navbar() {
 
       {user ? (
         <>
+          <Link to="/orders">
+            My Orders
+          </Link>
           <span>{user.email}</span>
 
           <button onClick={logout}>
@@ -46,5 +49,6 @@ export default function Navbar() {
         </>
       )}
     </nav>
+
   );
 }
