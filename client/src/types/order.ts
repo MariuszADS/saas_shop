@@ -18,3 +18,8 @@ export interface Order {
     updated_at: string;
     items: OrderItem[];
 }
+
+export interface AdminOrder extends Order {
+  user_id: number;
+  email: string;
+}

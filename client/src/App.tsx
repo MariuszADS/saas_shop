@@ -6,8 +6,9 @@ import {
 
 import Navbar from "@/components/NavBar";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
+import AdminRoute from "@/components/AdminRoute";
 import ProductsPage from "@/pages/ProductsPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 import CartPage from "@/pages/CartPages";
 import LoginPage from "@/pages/loginPage";
 import RegisterPage from "@/pages/registerPage";
@@ -28,6 +29,12 @@ function App() {
             />
           }
         />
+        <Route element={<AdminRoute />}>
+          <Route
+            path="/admin"
+            element={<AdminDashboardPage />}
+          />
+        </Route>
 
         <Route
           path="/products"

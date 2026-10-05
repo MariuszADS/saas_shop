@@ -6,6 +6,7 @@ import type {
 
 import { updateOrderStatus } from "@/db/sql/updateOrderStatus.ts";
 import type { OrderStatus } from "@/types/order.ts";
+import { getAllOrders } from "@/db/sql/getAllOrders.ts";
 
 const allowedStatuses: OrderStatus[] = [
   "pending",
@@ -14,6 +15,20 @@ const allowedStatuses: OrderStatus[] = [
   "delivered",
   "cancelled",
 ];
+
+export async function getAdminOrders(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const orders = await getAllOrders();
+
+    return res.status(200).json(orders);
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function updateOrderStatusController(
   req: Request,

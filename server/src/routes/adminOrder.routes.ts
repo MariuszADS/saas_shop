@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { getAdminOrders } from "@/controllers/adminOrder.controller.ts";
 import { authenticate } from "@/middleware/auth.middleware.ts";
 import { requireAdmin } from "@/middleware/role.middleware.ts";
 
@@ -16,4 +16,11 @@ router.patch(
   updateOrderStatusController
 );
 
+
+router.get(
+  "/",
+  authenticate,
+  requireAdmin,
+  getAdminOrders
+);
 export default router;
