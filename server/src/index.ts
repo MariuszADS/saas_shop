@@ -27,7 +27,7 @@ import express from "express";
 import cors from "cors";
 
 import authRoutes from "@/routes/auth.routes.ts";
-import productRoutes from "@/routes/product.routes.ts";
+import productRoutes from "@/routes/products.routes.ts";
 import orderRoutes from "@/routes/order.routes.ts";
 import adminOrderRoutes from "@/routes/adminOrder.routes.ts";
 

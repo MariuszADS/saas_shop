@@ -3,13 +3,25 @@ import {
     useState,
 } from "react";
 
+import AdminProductForm from "@/components/AdminProductForm";
+import AdminProductList from "@/components/AdminProductList";
+
 import { useAuth } from "@/hooks/useAuth";
+
 import {
     getAdminOrders,
     updateAdminOrderStatus,
 } from "@/services/order.service";
 
+import {
+    createAdminProduct,
+    deleteAdminProduct,
+    getAdminProducts,
+    updateAdminProduct
+} from "@/services/product.service";
+import AdminProductEditForm from "@/components/AdminProductEditForm";
 import type { AdminOrder } from "@/types/order";
+import type { Product } from "@/types/product";
 
 export default function AdminDashboardPage() {
     const { token } = useAuth();
@@ -17,14 +29,52 @@ export default function AdminDashboardPage() {
     const [orders, setOrders] =
         useState<AdminOrder[]>([]);
 
+    const [products, setProducts] =
+        useState<Product[]>([]);
+
+    const [editingProduct, setEditingProduct] =
+        useState<Product | null>(null);
+
     const [isLoading, setIsLoading] =
         useState(true);
 
     const [error, setError] =
         useState("");
 
+    async function handleCreateProduct(
+        product: {
+            name: string;
+            description: string;
+            price: number;
+            stock: number;
+        }
+    ) {
+        if (!token) {
+            return;
+        }
+
+        try {
+            setError("");
+
+            const createdProduct =
+                await createAdminProduct(
+                    product,
+                    token
+                );
+
+            setProducts((currentProducts) => [
+                createdProduct,
+                ...currentProducts,
+            ]);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
+        }
+    }
+
     useEffect(() => {
-        async function loadOrders() {
+        async function loadDashboard() {
             if (!token) {
                 setIsLoading(false);
                 return;
@@ -34,10 +84,15 @@ export default function AdminDashboardPage() {
                 setIsLoading(true);
                 setError("");
 
-                const data =
+                const ordersData =
                     await getAdminOrders(token);
 
-                setOrders(data);
+                setOrders(ordersData);
+
+                const productsData =
+                    await getAdminProducts();
+
+                setProducts(productsData);
             } catch (error) {
                 if (error instanceof Error) {
                     setError(error.message);
@@ -47,7 +102,7 @@ export default function AdminDashboardPage() {
             }
         }
 
-        loadOrders();
+        loadDashboard();
     }, [token]);
 
     async function handleStatusChange(
@@ -85,6 +140,38 @@ export default function AdminDashboardPage() {
         }
     }
 
+    async function handleDeleteProduct(
+        productId: number
+    ) {
+        if (!token) {
+            return;
+        }
+
+        try {
+            setError("");
+
+            await deleteAdminProduct(
+                productId,
+                token
+            );
+
+            setProducts((currentProducts) =>
+                currentProducts.filter(
+                    (product) =>
+                        product.id !== productId
+                )
+            );
+
+            if (editingProduct?.id === productId) {
+                setEditingProduct(null);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
+        }
+    }
+
     if (isLoading) {
         return <p>Loading dashboard...</p>;
     }
@@ -94,17 +181,61 @@ export default function AdminDashboardPage() {
     }
 
     const totalRevenue = orders.reduce(
-        (sum, order) => sum + Number(order.total),
+        (sum, order) =>
+            sum + Number(order.total),
         0
     );
 
     const pendingOrders = orders.filter(
-        (order) => order.status === "pending"
+        (order) =>
+            order.status === "pending"
     ).length;
 
-    const processingOrders = orders.filter(
-        (order) => order.status === "processing"
-    ).length;
+    const processingOrders =
+        orders.filter(
+            (order) =>
+                order.status === "processing"
+        ).length;
+
+    async function handleUpdateProduct(
+        productId: number,
+        product: {
+            name: string;
+            description: string;
+            price: number;
+            stock: number;
+            active: boolean;
+        }
+    ) {
+        if (!token) {
+            return;
+        }
+
+        try {
+            setError("");
+
+            const updatedProduct =
+                await updateAdminProduct(
+                    productId,
+                    product,
+                    token
+                );
+
+            setProducts((currentProducts) =>
+                currentProducts.map((currentProduct) =>
+                    currentProduct.id === productId
+                        ? updatedProduct
+                        : currentProduct
+                )
+            );
+
+            setEditingProduct(null);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            }
+        }
+    }
 
     return (
         <main>
@@ -116,7 +247,8 @@ export default function AdminDashboardPage() {
                 </p>
 
                 <p>
-                    Revenue: {totalRevenue.toFixed(2)}
+                    Revenue:{" "}
+                    {totalRevenue.toFixed(2)}
                 </p>
 
                 <p>
@@ -124,59 +256,84 @@ export default function AdminDashboardPage() {
                 </p>
 
                 <p>
-                    Processing: {processingOrders}
+                    Processing:{" "}
+                    {processingOrders}
                 </p>
             </section>
 
-            {orders.map((order) => (
-                <article key={order.id}>
-                    <h2>
-                        Order #{order.id}
-                    </h2>
+            <section>
+                <h2>Orders</h2>
 
-                    <p>
-                        Customer: {order.email}
-                    </p>
+                {orders.map((order) => (
+                    <article key={order.id}>
+                        <h3>
+                            Order #{order.id}
+                        </h3>
 
-                    <label>
-                        Status:
+                        <p>
+                            Customer: {order.email}
+                        </p>
 
-                        <select
-                            value={order.status}
-                            onChange={(event) =>
-                                handleStatusChange(
-                                    order.id,
-                                    event.target.value
-                                )
-                            }
-                        >
-                            <option value="pending">
-                                Pending
-                            </option>
+                        <label>
+                            Status:
 
-                            <option value="processing">
-                                Processing
-                            </option>
+                            <select
+                                value={order.status}
+                                onChange={(event) =>
+                                    handleStatusChange(
+                                        order.id,
+                                        event.target.value
+                                    )
+                                }
+                            >
+                                <option value="pending">
+                                    Pending
+                                </option>
 
-                            <option value="shipped">
-                                Shipped
-                            </option>
+                                <option value="processing">
+                                    Processing
+                                </option>
 
-                            <option value="delivered">
-                                Delivered
-                            </option>
+                                <option value="shipped">
+                                    Shipped
+                                </option>
 
-                            <option value="cancelled">
-                                Cancelled
-                            </option>
-                        </select>
-                    </label>
+                                <option value="delivered">
+                                    Delivered
+                                </option>
 
-                    <p>
-                        Total: {order.total}
-                    </p>
-                </article>
-            ))}
+                                <option value="cancelled">
+                                    Cancelled
+                                </option>
+                            </select>
+                        </label>
+
+                        <p>
+                            Total: {order.total}
+                        </p>
+                    </article>
+                ))}
+            </section>
+
+            <AdminProductForm
+                onCreate={handleCreateProduct}
+            />
+
+            {editingProduct && (
+                <AdminProductEditForm
+                    product={editingProduct}
+                    onUpdate={handleUpdateProduct}
+                    onCancel={() =>
+                        setEditingProduct(null)
+                    }
+                />
+            )}
+
+            <AdminProductList
+                products={products}
+                onDelete={handleDeleteProduct}
+                onEdit={setEditingProduct}
+            />
         </main>
     );
 }

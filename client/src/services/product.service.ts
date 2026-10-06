@@ -72,3 +72,110 @@ export async function getProducts(
 
   return response.json();
 }
+
+export async function getAdminProducts(): Promise<Product[]> {
+  const response = await fetch(
+    `${API_URL}/api/products`
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to fetch products"
+    );
+  }
+
+  return data.products ?? data;
+}
+
+export async function createAdminProduct(
+  product: {
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+  },
+  token: string
+): Promise<Product> {
+  const response = await fetch(
+    `${API_URL}/api/products`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(product),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to create product"
+    );
+  }
+
+  return data;
+}
+
+export async function deleteAdminProduct(
+  productId: number,
+  token: string
+) {
+  const response = await fetch(
+    `${API_URL}/api/products/${productId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to delete product"
+    );
+  }
+
+  return data;
+}
+
+export async function updateAdminProduct(
+  productId: number,
+  product: {
+    name?: string;
+    description?: string;
+    price?: number;
+    stock?: number;
+    active?: boolean;
+  },
+  token: string
+): Promise<Product> {
+  const response = await fetch(
+    `${API_URL}/api/products/${productId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(product),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to update product"
+    );
+  }
+
+  return data;
+}
