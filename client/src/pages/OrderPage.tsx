@@ -25,6 +25,7 @@ export default function OrdersPage() {
   useEffect(() => {
     async function loadOrders() {
       if (!token) {
+        setIsLoading(false);
         return;
       }
 
@@ -49,32 +50,61 @@ export default function OrdersPage() {
   }, [token]);
 
   if (isLoading) {
-    return <p>Loading orders...</p>;
+    return (
+      <main className="mx-auto max-w-4xl px-4 py-8">
+        <p className="text-sm text-gray-600">
+          Loading orders...
+        </p>
+      </main>
+    );
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return (
+      <main className="mx-auto max-w-4xl px-4 py-8">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {error}
+        </div>
+      </main>
+    );
   }
 
   if (orders.length === 0) {
     return (
-      <main>
-        <h1>My Orders</h1>
-        <p>You have no orders yet.</p>
+      <main className="mx-auto max-w-4xl px-4 py-8">
+        <h1 className="text-3xl font-semibold tracking-tight text-gray-950">
+          My Orders
+        </h1>
+
+        <div className="mt-6 rounded-xl border border-dashed border-gray-300 bg-white p-8 text-center">
+          <p className="text-sm text-gray-500">
+            You have no orders yet.
+          </p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>My Orders</h1>
+    <main className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-semibold tracking-tight text-gray-950">
+          My Orders
+        </h1>
 
-      {orders.map((order) => (
-        <OrderCard
-          key={order.id}
-          order={order}
-        />
-      ))}
+        <p className="mt-2 text-sm text-gray-600">
+          Review your previous orders and their current status.
+        </p>
+      </div>
+
+      <div className="space-y-5">
+        {orders.map((order) => (
+          <OrderCard
+            key={order.id}
+            order={order}
+          />
+        ))}
+      </div>
     </main>
   );
 }

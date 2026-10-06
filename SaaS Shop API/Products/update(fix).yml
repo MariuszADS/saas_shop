@@ -5,15 +5,12 @@ info:
 
 http:
   method: PATCH
-  url: "{{baseUrl}}/api/products/3"
+  url: "{{baseUrl}}/api/products/1"
   body:
     type: json
     data: |-
       {
-        "name": "Mechanical Keyboard Pro",
-        "description": "Updated keyboard",
-        "price": 999.99,
-        "stock": 20
+        "price": 199.99
       }
   auth:
     type: bearer

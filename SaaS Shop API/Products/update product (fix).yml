@@ -5,7 +5,7 @@ info:
 
 http:
   method: PUT
-  url: "{{baseUrl}}/api/products/3"
+  url: "{{baseUrl}}/api/products/30"
   body:
     type: json
     data: |-
@@ -15,6 +15,7 @@ http:
         "price": 999.99,
         "stock": 20
       }
+      //not in use
   auth:
     type: bearer
     token: XXX
