@@ -1,7 +1,11 @@
 import type { CartItem } from "@/types/cart";
-import type { Order, AdminOrder } from "@/types/order";
+import type {
+  Order,
+  AdminOrder,
+} from "@/types/order";
+import type { CheckoutData } from "@/types/checkout";
 
-import { createCheckoutPayload } from "@/utils/checkout";
+import { createCheckoutPayload } from "@/utils/checkout_utils";
 
 const API_URL = "http://localhost:3000";
 
@@ -21,7 +25,8 @@ export async function getAdminOrders(
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to fetch admin orders"
+      data.message ||
+        "Failed to fetch admin orders"
     );
   }
 
@@ -51,7 +56,8 @@ export async function updateAdminOrderStatus(
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to update order status"
+      data.message ||
+        "Failed to update order status"
     );
   }
 
@@ -60,9 +66,13 @@ export async function updateAdminOrderStatus(
 
 export async function createOrder(
   cart: CartItem[],
+  checkoutData: CheckoutData,
   token: string
 ) {
-  const payload = createCheckoutPayload(cart);
+  const payload = createCheckoutPayload(
+    cart,
+    checkoutData
+  );
 
   const response = await fetch(
     `${API_URL}/api/orders`,
@@ -80,7 +90,8 @@ export async function createOrder(
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to create order"
+      data.message ||
+        "Failed to create order"
     );
   }
 
@@ -103,7 +114,8 @@ export async function getMyOrders(
 
   if (!response.ok) {
     throw new Error(
-      data.message || "Failed to fetch orders"
+      data.message ||
+        "Failed to fetch orders"
     );
   }
 

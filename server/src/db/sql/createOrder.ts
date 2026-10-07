@@ -2,7 +2,10 @@ import { pool } from "@/db/db.ts";
 import type { CreateOrderInput } from "@/types/order.ts";
 
 export class OrderError extends Error {
-  constructor(public readonly status: number, message: string) {
+  constructor(
+    public readonly status: number,
+    message: string
+  ) {
     super(message);
   }
 }
@@ -10,13 +13,17 @@ export class OrderError extends Error {
 export async function createOrder({
   userId,
   items,
+  shippingAddress,
+  paymentMethod,
 }: CreateOrderInput) {
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
-    const productIds = items.map((item) => item.productId);
+    const productIds = items.map(
+      (item) => item.productId
+    );
 
     const productsResult = await client.query(
       `
@@ -29,48 +36,103 @@ export async function createOrder({
       [productIds]
     );
 
-    if (productsResult.rows.length !== items.length) {
-      throw new OrderError(404, "One or more products do not exist");
+    if (
+      productsResult.rows.length !==
+      items.length
+    ) {
+      throw new OrderError(
+        404,
+        "One or more products do not exist"
+      );
     }
 
     let total = 0;
 
     for (const item of items) {
-      const product = productsResult.rows.find(
-        (product) => product.id === item.productId
-      );
+      const product =
+        productsResult.rows.find(
+          (product) =>
+            product.id === item.productId
+        );
 
       if (!product) {
-        throw new OrderError(404, "Product not found");
+        throw new OrderError(
+          404,
+          "Product not found"
+        );
       }
 
-      if (product.stock < item.quantity) {
-        throw new OrderError(409,
+      if (
+        product.stock <
+        item.quantity
+      ) {
+        throw new OrderError(
+          409,
           `Not enough stock for product ${item.productId}`
         );
       }
 
-      total += Number(product.price) * item.quantity;
+      total +=
+        Number(product.price) *
+        item.quantity;
     }
 
-    const orderResult = await client.query(
-      `
-      INSERT INTO orders (
-        user_id,
-        total
-      )
-      VALUES ($1, $2)
-      RETURNING *
-      `,
-      [userId, total]
-    );
+    const orderResult =
+      await client.query(
+        `
+        INSERT INTO orders (
+          user_id,
+          total,
+          shipping_name,
+          shipping_address,
+          shipping_city,
+          shipping_postal_code,
+          shipping_country,
+          payment_method,
+          payment_status
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6,
+          $7,
+          $8,
+          $9
+        )
+        RETURNING *
+        `,
+        [
+          userId,
+          total,
+          shippingAddress.name,
+          shippingAddress.address,
+          shippingAddress.city,
+          shippingAddress.postalCode,
+          shippingAddress.country,
+          paymentMethod,
+          "authorized",
+        ]
+      );
 
-    const order = orderResult.rows[0];
+    const order =
+      orderResult.rows[0];
 
     for (const item of items) {
-      const product = productsResult.rows.find(
-        (product) => product.id === item.productId
-      );
+      const product =
+        productsResult.rows.find(
+          (product) =>
+            product.id === item.productId
+        );
+
+      if (!product) {
+        throw new OrderError(
+          404,
+          "Product not found"
+        );
+      }
 
       await client.query(
         `

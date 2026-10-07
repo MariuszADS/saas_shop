@@ -3,11 +3,13 @@ import type {
   Response,
   NextFunction,
 } from "express";
+
 import { getUserOrders } from "@/db/sql/getUserOrders.ts";
 import { getOrderById } from "@/db/sql/getOrderById.ts";
-import { createOrder, OrderError } from "@/db/sql/createOrder.ts";
-
-
+import {
+  createOrder,
+  OrderError,
+} from "@/db/sql/createOrder.ts";
 
 export async function createOrderController(
   req: Request,
@@ -21,11 +23,19 @@ export async function createOrderController(
       });
     }
 
-    const items = req.body?.items;
+    const {
+      items,
+      shippingAddress,
+      paymentMethod,
+    } = req.body ?? {};
 
-    if (!Array.isArray(items) || items.length === 0) {
+    if (
+      !Array.isArray(items) ||
+      items.length === 0
+    ) {
       return res.status(400).json({
-        message: "Order must contain at least one item",
+        message:
+          "Order must contain at least one item",
       });
     }
 
@@ -43,20 +53,88 @@ export async function createOrderController(
       }
     }
 
-    if (new Set(items.map((item) => item.productId)).size !== items.length) {
-      return res.status(400).json({ message: "Duplicate product IDs are not allowed" });
+    if (
+      new Set(
+        items.map((item) => item.productId)
+      ).size !== items.length
+    ) {
+      return res.status(400).json({
+        message:
+          "Duplicate product IDs are not allowed",
+      });
+    }
+
+    if (
+      !shippingAddress ||
+      typeof shippingAddress !== "object"
+    ) {
+      return res.status(400).json({
+        message:
+          "Shipping address is required",
+      });
+    }
+
+    const {
+      name,
+      address,
+      city,
+      postalCode,
+      country,
+    } = shippingAddress;
+
+    if (
+      typeof name !== "string" ||
+      !name.trim() ||
+      typeof address !== "string" ||
+      !address.trim() ||
+      typeof city !== "string" ||
+      !city.trim() ||
+      typeof postalCode !== "string" ||
+      !postalCode.trim() ||
+      typeof country !== "string" ||
+      !country.trim()
+    ) {
+      return res.status(400).json({
+        message:
+          "Invalid shipping address",
+      });
+    }
+
+    if (
+      paymentMethod !== "vipps" &&
+      paymentMethod !== "klarna"
+    ) {
+      return res.status(400).json({
+        message:
+          "Invalid payment method",
+      });
     }
 
     const order = await createOrder({
       userId: req.user.userId,
       items,
+
+      shippingAddress: {
+        name: name.trim(),
+        address: address.trim(),
+        city: city.trim(),
+        postalCode: postalCode.trim(),
+        country: country.trim(),
+      },
+
+      paymentMethod,
     });
 
     return res.status(201).json(order);
   } catch (error) {
     if (error instanceof OrderError) {
-      return res.status(error.status).json({ message: error.message });
+      return res
+        .status(error.status)
+        .json({
+          message: error.message,
+        });
     }
+
     next(error);
   }
 }
@@ -73,18 +151,24 @@ export async function getOrderByIdController(
       });
     }
 
-    const orderId = Number(req.params.id);
+    const orderId = Number(
+      req.params.id
+    );
 
-    if (Number.isNaN(orderId)) {
+    if (
+      !Number.isSafeInteger(orderId) ||
+      orderId <= 0
+    ) {
       return res.status(400).json({
         message: "Invalid order id",
       });
     }
 
-    const order = await getOrderById(
-      orderId,
-      req.user.userId
-    );
+    const order =
+      await getOrderById(
+        orderId,
+        req.user.userId
+      );
 
     if (!order) {
       return res.status(404).json({
@@ -92,7 +176,9 @@ export async function getOrderByIdController(
       });
     }
 
-    return res.status(200).json(order);
+    return res
+      .status(200)
+      .json(order);
   } catch (error) {
     next(error);
   }
@@ -110,11 +196,14 @@ export async function getMyOrdersController(
       });
     }
 
-    const orders = await getUserOrders(
-      req.user.userId
-    );
+    const orders =
+      await getUserOrders(
+        req.user.userId
+      );
 
-    return res.status(200).json(orders);
+    return res
+      .status(200)
+      .json(orders);
   } catch (error) {
     next(error);
   }

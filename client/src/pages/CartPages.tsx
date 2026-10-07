@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { createOrder } from "@/services/order.service";
 
+import CheckoutForm from "@/components/CheckoutForm";
+
+import type { CheckoutData } from "@/types/checkout";
+
 export default function CartPage() {
   const {
     cart,
@@ -12,14 +16,24 @@ export default function CartPage() {
     clearCart,
   } = useCart();
 
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] =
+    useState("");
 
-  async function handleCheckout() {
-    const token = localStorage.getItem("accessToken");
+  const [isLoading, setIsLoading] =
+    useState(false);
+
+  async function handleCheckout(
+    checkoutData: CheckoutData
+  ) {
+    const token =
+      localStorage.getItem(
+        "accessToken"
+      );
 
     if (!token) {
-      setMessage("You must be logged in.");
+      setMessage(
+        "You must be logged in."
+      );
       return;
     }
 
@@ -27,15 +41,17 @@ export default function CartPage() {
       setIsLoading(true);
       setMessage("");
 
-      const order = await createOrder(
-        cart,
-        token
-      );
+      const order =
+        await createOrder(
+          cart,
+          checkoutData,
+          token
+        );
 
       clearCart();
 
       setMessage(
-        `Order #${order.id} created successfully.`
+        `Order #${order.id} created successfully. Payment authorized.`
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -92,7 +108,10 @@ export default function CartPage() {
 
                 <p className="mt-1 text-sm font-medium text-gray-900">
                   Item total:{" "}
-                  {(item.price * item.quantity).toFixed(2)}
+                  {(
+                    item.price *
+                    item.quantity
+                  ).toFixed(2)}
                 </p>
               </div>
 
@@ -105,12 +124,12 @@ export default function CartPage() {
                       item.quantity - 1
                     )
                   }
-                  className="h-9 w-9 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                  className="h-9 w-9 rounded-lg border border-gray-300"
                 >
                   -
                 </button>
 
-                <span className="min-w-10 text-center text-sm font-medium text-gray-900">
+                <span className="min-w-10 text-center text-sm font-medium">
                   {item.quantity}
                 </span>
 
@@ -122,7 +141,7 @@ export default function CartPage() {
                       item.quantity + 1
                     )
                   }
-                  className="h-9 w-9 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                  className="h-9 w-9 rounded-lg border border-gray-300"
                 >
                   +
                 </button>
@@ -130,9 +149,11 @@ export default function CartPage() {
                 <button
                   type="button"
                   onClick={() =>
-                    removeItem(item.productId)
+                    removeItem(
+                      item.productId
+                    )
                   }
-                  className="ml-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                  className="ml-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-600"
                 >
                   Remove
                 </button>
@@ -149,20 +170,18 @@ export default function CartPage() {
           </span>
 
           <span className="text-xl font-semibold text-gray-950">
-            {Number(subtotal).toFixed(2)}
+            {Number(
+              subtotal
+            ).toFixed(2)}
           </span>
         </div>
+      </section>
 
-        <button
-          type="button"
-          onClick={handleCheckout}
-          disabled={isLoading}
-          className="mt-6 w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300"
-        >
-          {isLoading
-            ? "Creating order..."
-            : "Checkout"}
-        </button>
+      <section className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <CheckoutForm
+          onCheckout={handleCheckout}
+          isLoading={isLoading}
+        />
 
         {message && (
           <p className="mt-4 text-sm text-gray-700">

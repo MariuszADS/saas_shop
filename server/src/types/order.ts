@@ -1,12 +1,4 @@
-export interface CreateOrderItemInput {
-  productId: number;
-  quantity: number;
-}
 
-export interface CreateOrderInput {
-  userId: number;
-  items: CreateOrderItemInput[];
-}
 
 export type OrderStatus =
   | "pending"
@@ -14,3 +6,29 @@ export type OrderStatus =
   | "shipped"
   | "delivered"
   | "cancelled";
+
+export type PaymentMethod =
+  | "vipps"
+  | "klarna";
+
+export interface OrderItemInput {
+  productId: number;
+  quantity: number;
+}
+
+export interface ShippingAddressInput {
+  name: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+export interface CreateOrderInput {
+  userId: number;
+  items: OrderItemInput[];
+
+  shippingAddress: ShippingAddressInput;
+
+  paymentMethod: PaymentMethod;
+}
