@@ -6,6 +6,7 @@ interface UpdateProductInput {
   price?: number;
   stock?: number;
   active?: boolean;
+  imageUrl?: string;
 }
 
 export async function updateProduct(

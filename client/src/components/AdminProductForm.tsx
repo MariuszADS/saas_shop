@@ -9,17 +9,27 @@ interface AdminProductFormProps {
     description: string;
     price: number;
     stock: number;
+    imageUrl: string;
   }) => Promise<void>;
 }
 
 export default function AdminProductForm({
   onCreate,
 }: AdminProductFormProps) {
-  const [name, setName] = useState("");
+  const [name, setName] =
+    useState("");
+
   const [description, setDescription] =
     useState("");
-  const [price, setPrice] = useState("");
-  const [stock, setStock] = useState("");
+
+  const [price, setPrice] =
+    useState("");
+
+  const [stock, setStock] =
+    useState("");
+
+  const [imageUrl, setImageUrl] =
+    useState("");
 
   const [isSubmitting, setIsSubmitting] =
     useState(false);
@@ -37,12 +47,14 @@ export default function AdminProductForm({
         description,
         price: Number(price),
         stock: Number(stock),
+        imageUrl,
       });
 
       setName("");
       setDescription("");
       setPrice("");
       setStock("");
+      setImageUrl("");
     } finally {
       setIsSubmitting(false);
     }
@@ -75,7 +87,7 @@ export default function AdminProductForm({
                 setName(event.target.value)
               }
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
             />
           </label>
         </div>
@@ -92,7 +104,7 @@ export default function AdminProductForm({
                 )
               }
               rows={4}
-              className="mt-1 w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
+              className="mt-1 w-full resize-y rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
             />
           </label>
         </div>
@@ -108,7 +120,9 @@ export default function AdminProductForm({
                 step="0.01"
                 value={price}
                 onChange={(event) =>
-                  setPrice(event.target.value)
+                  setPrice(
+                    event.target.value
+                  )
                 }
                 required
                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
@@ -126,13 +140,43 @@ export default function AdminProductForm({
                 step="1"
                 value={stock}
                 onChange={(event) =>
-                  setStock(event.target.value)
+                  setStock(
+                    event.target.value
+                  )
                 }
                 required
                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
               />
             </label>
           </div>
+        </div>
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700">
+            Image URL
+
+            <input
+              type="url"
+              value={imageUrl}
+              onChange={(event) =>
+                setImageUrl(
+                  event.target.value
+                )
+              }
+              placeholder="https://..."
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
+            />
+          </label>
+
+          {imageUrl && (
+            <div className="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+              <img
+                src={imageUrl}
+                alt="Product preview"
+                className="h-48 w-full object-cover"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end">

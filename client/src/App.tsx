@@ -13,6 +13,7 @@ import CartPage from "@/pages/CartPages";
 import LoginPage from "@/pages/loginPage";
 import RegisterPage from "@/pages/registerPage";
 import OrdersPage from "@/pages/OrderPage";
+import ProductDetailsPage from "@/pages/ProductDetailsPage";
 
 function App() {
   return (
@@ -68,6 +69,10 @@ function App() {
             element={<OrdersPage />}
           />
         </Route>
+        <Route
+          path="/products/:id"
+          element={<ProductDetailsPage />}
+        />
 
         <Route
           path="*"

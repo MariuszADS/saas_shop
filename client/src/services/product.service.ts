@@ -90,12 +90,13 @@ export async function getAdminProducts(): Promise<Product[]> {
 }
 
 export async function createAdminProduct(
-  product: {
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
-  },
+ product: {
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  imageUrl: string;
+},
   token: string
 ): Promise<Product> {
   const response = await fetch(
@@ -174,6 +175,24 @@ export async function updateAdminProduct(
   if (!response.ok) {
     throw new Error(
       data.message || "Failed to update product"
+    );
+  }
+
+  return data;
+}
+
+export async function getProductById(
+  productId: number
+): Promise<Product> {
+  const response = await fetch(
+    `${API_URL}/api/products/${productId}`
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "Failed to fetch product"
     );
   }
 

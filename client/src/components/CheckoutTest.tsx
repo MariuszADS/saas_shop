@@ -16,10 +16,22 @@ export function CheckoutTest() {
     try {
       const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MDY5NTEzNiwiZXhwIjoxNzkwNjk2MDM2fQ.A-QPnQmqZ6db_qKuOhzEvjyGHJrYdYzheA2Yohx4N2o";
 
-      const order = await createOrder(
-        cart,
-        token
-      );
+      const checkoutData = {
+  shippingAddress: {
+    name: "Test User",
+    address: "Testveien 1",
+    city: "Oslo",
+    postalCode: "0001",
+    country: "Norway",
+  },
+  paymentMethod: "vipps" as const,
+};
+
+const order = await createOrder(
+  cart,
+  checkoutData,
+  token
+);
 
       setMessage(
         `Order created: ${order.id}`

@@ -20,13 +20,12 @@ export async function createProductController(
 ) {
   try {
     const product = await createProduct({
-      name: req.body.name,
-      description:
-        req.body.description ?? null,
-      price: req.body.price,
-      stock: req.body.stock,
-    });
-
+  name: req.body.name,
+  description: req.body.description ?? null,
+  price: req.body.price,
+  stock: req.body.stock,
+  imageUrl: req.body.imageUrl ?? null,
+});
     return res
       .status(201)
       .json(product);

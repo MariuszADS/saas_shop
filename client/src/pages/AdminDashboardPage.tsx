@@ -48,6 +48,7 @@ export default function AdminDashboardPage() {
       description: string;
       price: number;
       stock: number;
+      imageUrl:string
     }
   ) {
     if (!token) {

@@ -14,7 +14,10 @@ export async function updateProductController(
   try {
     const productId = Number(req.params.id);
 
-    if (!Number.isInteger(productId)) {
+    if (
+      !Number.isSafeInteger(productId) ||
+      productId <= 0
+    ) {
       return res.status(400).json({
         message: "Invalid product id",
       });
@@ -26,6 +29,7 @@ export async function updateProductController(
       price,
       stock,
       active,
+      imageUrl,
     } = req.body ?? {};
 
     const product = await updateProduct(
@@ -36,6 +40,7 @@ export async function updateProductController(
         price,
         stock,
         active,
+        imageUrl,
       }
     );
 
@@ -45,7 +50,9 @@ export async function updateProductController(
       });
     }
 
-    return res.status(200).json(product);
+    return res
+      .status(200)
+      .json(product);
   } catch (error) {
     next(error);
   }
