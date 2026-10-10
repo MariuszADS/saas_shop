@@ -1,33 +1,38 @@
 # SaaS Shop
+
 Full-stack e-commerce application built with React, TypeScript, Node.js, Express and PostgreSQL.
 
-## Current features
+## Features
+
 - User registration and login
-- JWT authentication
-- User and admin roles
+- JWT authentication and role-based access
+- Product listing, search, filtering and sorting
+- Product details
+- Shopping cart
+- Checkout with shipping address
+- Simulated Vipps / Klarna payment
+- Order history
+- Admin dashboard
 - Product CRUD
-- Product search, filtering, sorting and pagination
-- Order creation
-- User order history
-- Admin order status management
-- API integration tests
-- CI with GitHub Actions
+- Order status management
+- Product images
 
-## Tech stack
-Frontend:
-- React
-- TypeScript
-- Tailwind CSS
+## Tech Stack
 
-Backend:
-- Node.js
-- Express
-- TypeScript
-- PostgreSQL
-- Neon
+**Frontend:** React, TypeScript, Tailwind CSS, Vite
 
-Testing:
-- Vitest
-- Supertest
-- React Testing Library
-- Playwright
+**Backend:** Node.js, Express, TypeScript
+
+**Database:** PostgreSQL / Neon
+
+**Testing:** Vitest, Supertest, Playwright
+
+**DevOps:** GitHub Actions, CI/CD
+
+## Demo Accounts
+
+### User
+
+```text
+Email: test@user.com
+Password: Test123!
