@@ -36,3 +36,8 @@ Full-stack e-commerce application built with React, TypeScript, Node.js, Express
 ```text
 Email: test@user.com
 Password: Test123!
+```
+##Run locally fontend & backend
+cd server
+npm install
+npm run dev
