@@ -38,6 +38,6 @@ Email: test@user.com
 Password: Test123!
 ```
 ##Run locally fontend & backend
-cd server
-npm install
-npm run dev
+-cd server
+-npm install
+-npm run dev
