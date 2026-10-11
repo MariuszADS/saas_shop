@@ -81,7 +81,7 @@ describe("registration and login", () => {
     query.mockResolvedValueOnce({ rows: [user] });
     const registration = await request(app).post("/api/auth/register").send({ email, password });
     expect(registration.status).toBe(201);
-    expect(registration.body).toEqual(user);
+   expect(registration.body).toEqual({ user });
     const storedHash = query.mock.calls[0]![1][1];
     expect(storedHash).not.toBe(password);
     expect(await bcrypt.compare(password, storedHash)).toBe(true);

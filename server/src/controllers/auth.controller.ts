@@ -54,9 +54,14 @@ export async function register(
       passwordHash,
     });
 
-    return res.status(201).json({
-      user,
-    });
+    if (!user) {
+      return res.status(409).json({
+        message:
+          "An account with this email already exists. Log in instead.",
+      });
+    }
+
+    return res.status(201).json({ user });
   } catch (error: unknown) {
     if (
       typeof error === "object" &&
