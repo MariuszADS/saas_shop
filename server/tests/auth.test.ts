@@ -73,8 +73,8 @@ describe("product permissions", () => {
 
 
 describe("registration and login", () => {
-  const email = "auth-test@example.invalid";
-  const password = "test-password-for-auth";
+  const email = "test@user.com";
+  const password = "Test123!";
 
   it("stores a bcrypt hash and logs in with the original password only", async () => {
     const user = { id: 42, email, role: "user" };
