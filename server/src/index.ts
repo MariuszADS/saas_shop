@@ -32,11 +32,11 @@ import orderRoutes from "@/routes/order.routes.ts";
 import adminOrderRoutes from "@/routes/adminOrder.routes.ts";
 
 export const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT || 3000);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
