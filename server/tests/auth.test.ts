@@ -12,7 +12,7 @@ const { query, secret } = vi.hoisted(() => {
 vi.mock("../src/db/db.ts", () => ({ pool: { query } }));
 
 import authRoutes from "../src/routes/auth.routes.ts";
-import productRoutes from "../src/routes/product.routes.ts";
+import productRoutes from "../src/routes/products.routes.ts";
 import { generateAccessToken } from "../src/utils/jwt.ts";
 
 const app = express();
