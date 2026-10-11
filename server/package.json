@@ -4,6 +4,7 @@
     "build": "tsc",
     "test": "vitest",
     "test:run": "vitest run"
+    
   },
   "type": "module",
   "dependencies": {
