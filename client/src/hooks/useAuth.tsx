@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { API_URL } from "@/services/api";
 import type { AuthUser } from "@/types/auth";
 
 interface AuthContextValue {
@@ -50,7 +51,7 @@ export function AuthProvider({
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/auth/me",
+          `${API_URL}/api/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
