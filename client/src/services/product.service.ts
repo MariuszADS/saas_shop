@@ -1,6 +1,5 @@
 import type { Product } from "@/types/product";
-
-const API_URL = "http://localhost:3000";
+import { API_URL } from "@/services/api";
 
 interface ProductQuery {
   search?: string;

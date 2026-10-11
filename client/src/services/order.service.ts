@@ -4,10 +4,9 @@ import type {
   AdminOrder,
 } from "@/types/order";
 import type { CheckoutData } from "@/types/checkout";
-
+import { API_URL } from "@/services/api";
 import { createCheckoutPayload } from "@/utils/checkout_utils";
 
-const API_URL = "http://localhost:3000";
 
 export async function getAdminOrders(
   token: string
